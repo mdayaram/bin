@@ -1,0 +1,15 @@
+#!/bin/bash
+
+FILENAME=$1
+
+sed ':a;N;$!ba;s/\n/\r\n/g' $FILENAME
+
+# Explanation:
+# 1. create a register via :a
+# 2. append the current and next line to the register via N
+# 3. if we are before the last line, branch to the created
+#    register $!ba (`$! means not to do it on the last line
+#    (as there should be one final newline)).
+# 4. finally the substitution replaces every newline with a 
+#    carriage return + new line on the pattern space (which
+#    is the contents of the a register = the whole file.

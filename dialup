@@ -1,0 +1,62 @@
+#!/bin/bash
+
+#############################################################################
+# For mac, you should use this awesome GUI app:
+# http://mattgemmell.com/2011/07/25/network-link-conditioner-in-lion/
+#
+
+
+CMD=$1
+INTERFACE=$2
+DELAY=$3
+DEST=$4
+
+if [ -z $CMD ]; then
+	echo "Need to provide a command."
+	echo "Options are the following:"
+	echo ""
+	echo "   start <wlan0|eth0> [delay in ms] [ destination ip ]"
+	echo "   stop"
+	echo "   show"
+	echo ""
+	exit 1
+fi
+
+if [ -z $INTERFACE ]; then
+	INTERFACE=eth0
+	echo "No interface specified, defaulting to $INTERFACE"
+fi
+
+if [[ -z $DELAY && $CMD == "start" ]]; then
+	DELAY=500ms
+	echo "No delay specified, defaulting to $DELAY"
+elif [[ $DELAY != *"ms" ]]; then
+	DELAY=${DELAY}ms
+fi
+
+if [[ -z $DEST && $CMD == "start" ]]; then
+	DEST="0.0.0.0/0"
+	echo "No destination IP address was specified, defaulting to $DEST"
+fi
+
+if [ $CMD == "show" ]; then
+	echo "Current dialup settings:"
+	eval "tc qdisc show dev $INTERFACE"
+elif [ $CMD == "start" ]; then
+	echo "Starting dialup....Kreeeeeeeee"
+	eval "sudo tc qdisc add dev $INTERFACE root handle 1: prio"
+	eval "sudo tc qdisc add dev $INTERFACE parent 1:3 handle 30: netem delay $DELAY"
+	eval "sudo tc filter add dev $INTERFACE parent 1:0 protocol ip prio 3 u32 match ip dst 0.0.0.0/0 flowid 1:3"
+	eval "tc qdisc show dev $INTERFACE"
+elif [ $CMD == "stop" ]; then
+	echo "Stopping dialup...."
+	eval "sudo tc qdisc del dev $INTERFACE root"
+	if [ $? == 0 ]; then
+		echo "Successfully stopped dialup."
+	else
+		echo "There was an error when trying to stop dialup =x"
+	fi
+else
+	echo "Hmm...I got nothin'..."
+fi
+

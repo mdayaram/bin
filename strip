@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+if ARGV.length == 0
+  puts "Fail, need file argument."
+end
+
+hi = File.read(ARGV[0])
+hi = hi.strip
+File.open(ARGV[0], "w") { |f| f.write(hi) }

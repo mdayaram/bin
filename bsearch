@@ -1,0 +1,26 @@
+#!/usr/bin/env ruby
+
+if ARGV.length <= 1
+  puts "Need search string and file argument."
+  puts "bsearch \"findme\" filename.stuff"
+  exit 1
+end
+
+search_str = ARGV[0].bytes.to_a
+datas = File.binread(ARGV[1]).to_s
+
+seek = 0
+match = 0
+
+datas.each_byte do |b|
+  if b == search_str[match]
+    match += 1
+  elsif match > 0
+    match = 0
+  end
+  if match == search_str.length
+    puts "Found \"#{ARGV[0]}\" string @ byte ##{seek}"
+    match = 0
+  end
+  seek += 1
+end

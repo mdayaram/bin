@@ -1,0 +1,25 @@
+#!/bin/bash
+
+if [ -z "$1" ]; then
+	url="http://www.google.com"
+else
+	url=$1
+fi
+
+if [ -z "$2" ]; then
+	sleep_time="10s"
+else
+	sleep_time="$2"
+fi
+
+while [ true ]; do
+	response=$(curl --write-out %{http_code} --silent --output /dev/null ${url})
+	if [ "$response" != "200" ]; then
+		echo "Internet died!"
+		date
+		exit 1
+	else
+		echo "`date` - Still coo'"
+	fi
+	sleep $sleep_time
+done

@@ -1,0 +1,16 @@
+#!/bin/bash
+
+SNIFF_INTERFACE=$1
+SNIFF_HOST=$2
+
+if [ -z "$SNIFF_INTERFACE" ]; then
+	echo "Usage:  sniffles [eth0|wlan0|etc...] [host]"
+	exit 1
+fi
+
+if [ -z "$SNIFF_HOST" ]; then
+	echo "Usage:  sniffles [eth0|wlan0|etc...] [host]"
+	exit 1
+fi
+
+sudo tcpdump -X -s 1500 -i $SNIFF_INTERFACE host $SNIFF_HOST

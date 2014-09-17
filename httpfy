@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+if ARGV.length < 1
+  puts "Need file argument."
+  puts "To substitute in place, use -f flag"
+  exit! 1
+end
+
+file = ARGV[0]
+write = false
+if ARGV.length > 1 && ARGV[0] == "-f"
+  write = true
+  file = ARGV[1]
+elsif ARGV.length > 1 && ARGV[1] == "-f"
+  write = true
+end
+
+datas = File.read(file).split("\n")
+newdatas = []
+sep = "\r\n"
+datas.each do |line|
+  l = line.strip
+  newdatas << l + sep
+  if l.empty?
+    sep = "\n"
+  end
+end
+
+
+if sep == "\r\n" && (newdatas.length <= 1 || newdatas[-2] != "")
+  newdatas << ""
+end
+if sep == "\r\n" && (newdatas.length <= 1 || newdatas[-2] != "")
+  newdatas << ""
+end
+
+finaldatas = newdatas.join("")
+if write
+  File.open(file, 'w') { |f| f.write(finaldatas) }
+else
+  print finaldatas
+end
