@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+# File should be sourced in bashrc or bash_profile.  Otherwise setting the
+# environment variable would not carry over to the parent shell.
+
+function gopath {
+	if [[ "$1" != "" ]]; then
+		GOPATH=
+		for p in "$@"; do
+			GOPATH=$GOPATH:$p
+		done
+		export GOPATH=$(echo $GOPATH | tail -c +2) # remove the first colon
+		echo "GOPATH=$GOPATH"
+		return 0
+	fi
+
+	local current=`pwd`
+	while [ ! -d "`pwd`/src" -a `pwd` != "/" ]; do
+		cd ..
+	done
+
+	if [[ `pwd` == "/" ]]; then
+		cd "$current"
+		echo "WARNING: No valid GOPATH found in directory tree."
+		echo "         Setting it to current directory anyway."
+		echo ""
+	fi
+
+	export GOPATH=`pwd`
+	echo "GOPATH=$GOPATH"
+	cd "$current"
+	return 0
+}

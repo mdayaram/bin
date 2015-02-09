@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# .bashrc will source this file.
+# List all files here that should be sourced by bashrc
+
+source "$HOME/bin/env/gopath"
