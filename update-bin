@@ -44,15 +44,15 @@ mv ./cowspeak/cowspeak ..
 
 # Update Sublime command line shortcut
 subl_path="/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
-if [[ ! -e "$subl_path" ]]; then
+if [[ ! -f "$subl_path" ]]; then
 	subl_path="/Applications/Sublime Text 3.app/Contents/SharedSupport/bin/subl"
-	if [[ ! -e "$subl_path" ]]; then
+	if [[ ! -f "$subl_path" ]]; then
 		subl_path="/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl"
 	fi
 fi
 
-if [ -e $subl_path ]; then
-	ln -s $subl_path "$HOME/bin/subl"
+if [ -f "$subl_path" ]; then
+	ln -s $subl_path "$HOME/bin/"
 fi
 
 
