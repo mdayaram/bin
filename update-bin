@@ -52,7 +52,7 @@ if [[ ! -f "$subl_path" ]]; then
 fi
 
 if [ -f "$subl_path" ]; then
-	ln -s $subl_path "$HOME/bin/"
+	ln -fs $subl_path "$HOME/bin/"
 fi
 
 
