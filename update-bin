@@ -1,0 +1,69 @@
+#!/usr/bin/env bash -x
+
+if [ ! -e "$HOME/bin" ]; then
+	cd $HOME
+	git clone git@github.com:mdayaram/bin
+	[ $? != 0 ] && exit 1
+fi
+
+cd $HOME/bin
+git pull
+[ $? != 0 ] && exit 1
+
+# Clear any previous update residue data
+rm -rf ./tmp
+mkdir tmp
+cd tmp
+
+# Get the latest chromedriver
+ver=`curl http://chromedriver.storage.googleapis.com/LATEST_RELEASE`
+[ $? != 0 ] && exit 1
+
+os="linux32"
+if [ "x86_64" == `uname -m` ]; then
+	os="linux64"
+fi
+
+if [ "Darwin" == `uname` ]; then
+	os="mac32" # there's no 64bit version of chromedriver for mac yet.
+fi
+
+wget "http://chromedriver.storage.googleapis.com/$ver/chromedriver_$os.zip"
+[ $? != 0 ] && exit 1
+unzip "chromedriver_$os.zip"
+[ $? != 0 ] && exit 1
+mv chromedriver ..
+
+
+# Update cowspeak
+git clone git@github.com:mdayaram/cowspeak
+[ $? != 0 ] && exit 1
+mv ./cowspeak/cowspeak ..
+[ $? != 0 ] && exit 1
+
+
+# Update Sublime command line shortcut
+subl_path="/Applications/Sublime Text.app/Contents/SharedSupport/bin/subl"
+if [ ! -e $subl_path ]; then
+	subl_path="/Applications/Sublime Text 3.app/Contents/SharedSupport/bin/subl"
+	if [ ! -e $subl_path ]; then
+		subl_path="/Applications/Sublime Text 2.app/Contents/SharedSupport/bin/subl"
+	fi
+fi
+
+if [ -e $subl_path ]; then
+	ln -s $subl_path "$HOME/bin/subl"
+fi
+
+
+# Finally godep
+# For this session, set GOPATH to tmp directory.
+GOPATH=`pwd`
+go get "github.com/tools/godep"
+[ $? != 0 ] && exit 1
+
+mv ./bin/godep ..
+[ $? != 0 ] && exit 1
+
+echo "Done done!"
+exit 0
