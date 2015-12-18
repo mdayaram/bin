@@ -1,9 +1,12 @@
 #!/usr/bin/env ruby
 
-if ARGV.length == 0
-  puts "Fail, need file argument."
-end
+filename = ARGV[0]
 
-hi = File.read(ARGV[0])
-hi = hi.strip
-File.open(ARGV[0], "w") { |f| f.write(hi) }
+body = ARGF.read
+body = body.strip
+
+if !filename.nil? && !filename.empty?
+  File.open(filename, "w") { |f| f.write(body) }
+else
+  print hi
+end
