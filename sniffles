@@ -9,7 +9,15 @@ if [ -z "$SNIFF_HOST" ]; then
 fi
 
 if [ -z "$SNIFF_INTERFACE" ]; then
-  SNIFF_INTERFACE=`route get $SNIFF_HOST | grep 'interface' | awk -F':' '{print $2}' | tr -d '[[:space:]]'`
+  if [[ `uname` == "Darwin" ]]; then
+    SNIFF_INTERFACE=`route get $SNIFF_HOST | grep 'interface' | awk -F':' '{print $2}' | tr -d '[[:space:]]'`
+  elif [[ `uname` == "Linux" ]]; then
+    SNIFF_INTERFACE=`ip route get "$(dig $SNIFF_HOST +short)" | head -n 1 | awk '{print $5}'`
+  else
+    echo "Cannot auto-determine network interface."
+    echo "Please provide it as an arguement and try again."
+    exit 1
+  fi
 fi
 
 sudo tcpdump -v -X -s 1500 -i $SNIFF_INTERFACE host $SNIFF_HOST
