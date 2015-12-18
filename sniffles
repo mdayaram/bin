@@ -13,4 +13,4 @@ if [ -z "$SNIFF_HOST" ]; then
 	exit 1
 fi
 
-sudo tcpdump -X -s 1500 -i $SNIFF_INTERFACE host $SNIFF_HOST
+sudo tcpdump -v -X -s 1500 -i $SNIFF_INTERFACE host $SNIFF_HOST
