@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
 
+# Alternatively, you could do the following:
+# strings -o -t d <FILENAME> | grep <TEXT>
+# or
+# grep -oba <TEXT> <FILENAME>
+#
+
 if ARGV.length <= 1
   puts "Need search string and file argument."
   puts "bsearch \"findme\" filename.stuff"
